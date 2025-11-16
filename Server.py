@@ -8,8 +8,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Paths to your model and tokenizer
-H5_FILE_PATH = r'C:\Users\Younes\Desktop\M2\Nlp\Project\sentiment_cnn_model.h5'
-PKL_FILE_PATH = r'C:\Users\Younes\Desktop\M2\Nlp\Project\tokenizer.pkl'
+H5_FILE_PATH = r'sentiment_cnn_model.h5'
+PKL_FILE_PATH = r'tokenizer.pkl'
 
 # Load model and tokenizer once at startup
 model = load_model(H5_FILE_PATH)
