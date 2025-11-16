@@ -3,22 +3,28 @@ from flask_cors import CORS
 import pickle
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-# Paths to your model and tokenizer
-H5_FILE_PATH = r'sentiment_cnn_model.h5'
-PKL_FILE_PATH = r'tokenizer.pkl'
 
-# Load model and tokenizer once at startup
-model = load_model(H5_FILE_PATH)
-with open(PKL_FILE_PATH, 'rb') as f:
-    tokenizer = pickle.load(f)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+H5_FILE_PATH = os.path.join(BASE_DIR, "models", "sentiment_cnn_model.h5")
+PKL_FILE_PATH = os.path.join(BASE_DIR, "models", "tokenizer.pkl")
 
-MAX_LEN = 100  # Change this to your model's input length
 
-labels = ['negative', 'neutral', 'positive']  # Order must match your model output
+try:
+    model = load_model(H5_FILE_PATH)
+    with open(PKL_FILE_PATH, 'rb') as f:
+        tokenizer = pickle.load(f)
+    print("✅ Model and tokenizer loaded successfully.")
+except Exception as e:
+    print(f"❌ Error loading model or tokenizer: {e}")
+
+MAX_LEN = 100  
+labels = ['negative', 'neutral', 'positive'] 
+
 
 @app.route('/predict', methods=['POST'])
 def predict_sentiment():
@@ -29,16 +35,16 @@ def predict_sentiment():
 
         text_to_analyze = data['text']
 
-        # Preprocess text
+        
         seq = tokenizer.texts_to_sequences([text_to_analyze])
         padded = pad_sequences(seq, maxlen=MAX_LEN)
 
-        # Predict
-        pred_probs = model.predict(padded)[0]  # Probabilities for each class
+       
+        pred_probs = model.predict(padded)[0]  
         predicted_index = pred_probs.argmax()
         predicted_label = labels[predicted_index]
 
-        # Build confidence dictionary
+
         confidences_dict = {labels[i]: float(pred_probs[i]) for i in range(len(labels))}
 
         return jsonify({
@@ -51,8 +57,4 @@ def predict_sentiment():
         print(f"!!! خطأ في /predict: {e}")
         return jsonify({
             "status": "error",
-            "message": f"حدث خطأ في الخادم: {str(e)}"
-        }), 500
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+            "message": f"حدث خطأ في الخادم: {s
