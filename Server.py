@@ -8,7 +8,6 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 H5_FILE_PATH = os.path.join(BASE_DIR, "models", "sentiment_cnn_model.h5")
 PKL_FILE_PATH = os.path.join(BASE_DIR, "models", "tokenizer.pkl")
@@ -23,7 +22,7 @@ except Exception as e:
     print(f"❌ Error loading model or tokenizer: {e}")
 
 MAX_LEN = 100  
-labels = ['negative', 'neutral', 'positive'] 
+labels = ['negative', 'neutral', 'positive']  
 
 
 @app.route('/predict', methods=['POST'])
@@ -35,16 +34,16 @@ def predict_sentiment():
 
         text_to_analyze = data['text']
 
-        
+       
         seq = tokenizer.texts_to_sequences([text_to_analyze])
         padded = pad_sequences(seq, maxlen=MAX_LEN)
 
-       
+     
         pred_probs = model.predict(padded)[0]  
         predicted_index = pred_probs.argmax()
         predicted_label = labels[predicted_index]
 
-
+  
         confidences_dict = {labels[i]: float(pred_probs[i]) for i in range(len(labels))}
 
         return jsonify({
@@ -57,4 +56,10 @@ def predict_sentiment():
         print(f"!!! خطأ في /predict: {e}")
         return jsonify({
             "status": "error",
-            "message": f"حدث خطأ في الخادم: {s
+            "message": f"حدث خطأ في الخادم: {str(e)}"
+        }), 500
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000)) 
+    app.run(host='0.0.0.0', port=port, debug=True)
