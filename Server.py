@@ -6,7 +6,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, origins=["https://darija-sentiment-analysis-frontend.onrender.com"])
 
 H5_FILE_PATH = r'sentiment_cnn_model.h5'
 PKL_FILE_PATH =r'tokenizer.pkl'
