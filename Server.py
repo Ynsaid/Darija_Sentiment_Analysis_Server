@@ -8,9 +8,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-H5_FILE_PATH = os.path.join(BASE_DIR, "models", "sentiment_cnn_model.h5")
-PKL_FILE_PATH = os.path.join(BASE_DIR, "models", "tokenizer.pkl")
+
+H5_FILE_PATH = r'sentiment_cnn_model.h5'
+PKL_FILE_PATH =r'tokenizer.pkl'
 
 
 try:
